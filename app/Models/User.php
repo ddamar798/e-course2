@@ -45,4 +45,25 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class, 'user_id');
+    }
+
+    public function getActiveSubscriptions()
+    {
+        return $this->transactions()
+        ->where('is_paid', true)
+        ->where('ended_at', '>=', now())
+        ->frist(); // return details of subscription.
+    }
+
+    public function hasActiveSubscriptions()
+    {
+        return $this->transactions()
+        ->where('is_paid', true)
+        ->where('ended_at', '>=', now())
+        ->exists(); // return boolean.
+    }
 }
